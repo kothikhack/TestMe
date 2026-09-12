@@ -151,6 +151,40 @@ export default function BackupRestore() {
           </button>
         </div>
       </div>
+
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-6">
+        <h2 className="text-xl font-bold mb-4">JSON File Format Example</h2>
+        <p className="text-sm text-slate-500 mb-4">
+          Want to write your own chunks manually? Create a <code>.json</code> file using this exact structure:
+        </p>
+        <pre className="bg-slate-900 text-emerald-400 p-4 rounded-lg overflow-x-auto text-sm font-mono">
+{`{
+  "version": 1,
+  "timestamp": "${new Date().toISOString()}",
+  "questions": [
+    {
+      "type": "mcq",
+      "questionText": "What is the capital of France?",
+      "options": ["London", "Berlin", "Paris", "Madrid"],
+      "correctAnswer": "2",
+      "categories": ["Geography", "Europe"],
+      "explanation": "Paris is the capital of France.",
+      "createdAt": "${new Date().toISOString()}"
+    },
+    {
+      "type": "text",
+      "questionText": "What is 2 + 2?",
+      "options": null,
+      "correctAnswer": "4",
+      "categories": ["Math"],
+      "explanation": "Basic addition.",
+      "createdAt": "${new Date().toISOString()}"
+    }
+  ],
+  "exams": []
+}`}
+        </pre>
+      </div>
     </div>
   );
 }

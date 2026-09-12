@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type Question, type Exam } from '../db';
-import { PlaySquare, CheckCircle, XCircle, ArrowRight, ArrowLeft } from 'lucide-react';
+import { PlaySquare, CheckCircle, XCircle, ArrowRight, ArrowLeft, Edit, Trash2 } from 'lucide-react';
 
 export default function ExamSimulator() {
   const { examId } = useParams();
@@ -22,6 +22,12 @@ export default function ExamSimulator() {
       loadExam(parseInt(examId));
     }
   }, [examId]);
+
+  const handleDeleteExam = async (id: number) => {
+    if (confirm('Are you sure you want to delete this exam?')) {
+      await db.exams.delete(id);
+    }
+  };
 
   const loadExam = async (id: number) => {
     const exam = await db.exams.get(id);
@@ -75,12 +81,28 @@ export default function ExamSimulator() {
                   <span className="text-xs font-medium bg-slate-100 text-slate-600 px-2 py-1 rounded">
                     {exam.questionIds.length} Questions
                   </span>
-                  <Link
-                    to={`/simulator/${exam.id}`}
-                    className="flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-800"
-                  >
-                    Start <PlaySquare className="w-4 h-4" />
-                  </Link>
+                  <div className="flex items-center gap-3">
+                    <Link
+                      to={`/builder/${exam.id}`}
+                      className="text-slate-400 hover:text-indigo-600 transition-colors"
+                      title="Edit Exam"
+                    >
+                      <Edit className="w-5 h-5" />
+                    </Link>
+                    <button
+                      onClick={() => exam.id && handleDeleteExam(exam.id)}
+                      className="text-slate-400 hover:text-red-600 transition-colors"
+                      title="Delete Exam"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                    <Link
+                      to={`/simulator/${exam.id}`}
+                      className="flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-800 ml-2"
+                    >
+                      Start <PlaySquare className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))
@@ -151,7 +173,12 @@ export default function ExamSimulator() {
                   </div>
                   <div className="flex-grow">
                     <p className="font-medium text-slate-800">{q.questionText}</p>
-                    <div className="mt-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {q.figureBase64 && (
+                      <div className="mt-3">
+                        <img src={q.figureBase64} alt="Question figure" className="max-h-40 rounded-lg border border-slate-200" />
+                      </div>
+                    )}
+                    <div className="mt-4 text-sm grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div>
                         <span className="text-slate-500">Your Answer:</span>
                         <p className={`font-semibold ${isCorrect ? 'text-emerald-700' : 'text-red-700'}`}>
@@ -200,8 +227,14 @@ export default function ExamSimulator() {
       </div>
 
       <div className="bg-white p-6 md:p-10 rounded-xl shadow-sm border border-slate-200 flex-grow flex flex-col overflow-y-auto">
-        <p className="text-lg font-medium text-slate-800 mb-8 whitespace-pre-wrap">{currentQ.questionText}</p>
+        <p className="text-lg font-medium text-slate-800 mb-6 whitespace-pre-wrap">{currentQ.questionText}</p>
         
+        {currentQ.figureBase64 && (
+          <div className="mb-8 flex justify-center bg-slate-50 p-4 rounded-lg border border-slate-100">
+            <img src={currentQ.figureBase64} alt="Question figure" className="max-h-64 object-contain rounded shadow-sm" />
+          </div>
+        )}
+
         <div className="mt-auto space-y-4">
           {currentQ.type === 'mcq' ? (
             <div className="space-y-3">

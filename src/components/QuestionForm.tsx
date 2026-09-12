@@ -14,6 +14,7 @@ export default function QuestionForm({ initialData, onClose }: Props) {
   const [correctAnswer, setCorrectAnswer] = useState<string>(initialData?.correctAnswer || '0');
   const [categoriesStr, setCategoriesStr] = useState(initialData?.categories.join(', ') || '');
   const [explanation, setExplanation] = useState(initialData?.explanation || '');
+  const [figureBase64, setFigureBase64] = useState<string | undefined>(initialData?.figureBase64);
 
   // Ensure correctAnswer is valid when type changes
   useEffect(() => {
@@ -46,6 +47,46 @@ export default function QuestionForm({ initialData, onClose }: Props) {
     setOptions(newOptions);
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        setFigureBase64(dataUrl);
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -61,6 +102,7 @@ export default function QuestionForm({ initialData, onClose }: Props) {
       correctAnswer,
       categories,
       explanation,
+      figureBase64,
       createdAt: initialData?.createdAt || new Date(),
     };
 
@@ -197,6 +239,30 @@ export default function QuestionForm({ initialData, onClose }: Props) {
             className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
             placeholder="Explain the correct answer..."
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Figure / Image (Optional)</label>
+          <div className="flex flex-col gap-3">
+            {figureBase64 && (
+              <div className="relative inline-block w-48 h-48 border border-slate-200 rounded-lg overflow-hidden">
+                <img src={figureBase64} alt="Figure preview" className="w-full h-full object-contain" />
+                <button
+                  type="button"
+                  onClick={() => setFigureBase64(undefined)}
+                  className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full hover:bg-red-700"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+            />
+          </div>
         </div>
 
         <div className="pt-4 border-t border-slate-200 flex justify-end gap-3">

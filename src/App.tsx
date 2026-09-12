@@ -14,6 +14,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="questions" element={<QuestionBank />} />
           <Route path="builder" element={<TestBuilder />} />
+          <Route path="builder/:examId" element={<TestBuilder />} />
           <Route path="simulator" element={<ExamSimulator />} />
           <Route path="simulator/:examId" element={<ExamSimulator />} />
           <Route path="backup" element={<BackupRestore />} />

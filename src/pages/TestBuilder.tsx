@@ -1,15 +1,31 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Search, Save } from 'lucide-react';
 
 export default function TestBuilder() {
   const navigate = useNavigate();
+  const { examId } = useParams();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    if (examId) {
+      const loadExam = async () => {
+        const exam = await db.exams.get(parseInt(examId));
+        if (exam) {
+          setTitle(exam.title);
+          setDescription(exam.description || '');
+          setSelectedQuestionIds(new Set(exam.questionIds));
+        }
+      };
+      loadExam();
+    }
+  }, [examId]);
 
   const questions = useLiveQuery(
     () => db.questions.orderBy('createdAt').reverse().toArray(),
@@ -38,12 +54,20 @@ export default function TestBuilder() {
       return;
     }
 
-    await db.exams.add({
-      title,
-      description,
-      questionIds: Array.from(selectedQuestionIds),
-      createdAt: new Date(),
-    });
+    if (examId) {
+      await db.exams.update(parseInt(examId), {
+        title,
+        description,
+        questionIds: Array.from(selectedQuestionIds),
+      });
+    } else {
+      await db.exams.add({
+        title,
+        description,
+        questionIds: Array.from(selectedQuestionIds),
+        createdAt: new Date(),
+      });
+    }
 
     navigate('/simulator');
   };
@@ -51,8 +75,8 @@ export default function TestBuilder() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-slate-800">Test Builder</h1>
-        <p className="text-slate-600">Create a new exam from your question bank.</p>
+        <h1 className="text-3xl font-bold text-slate-800">{examId ? 'Edit Exam' : 'Test Builder'}</h1>
+        <p className="text-slate-600">{examId ? 'Update your exam details and questions.' : 'Create a new exam from your question bank.'}</p>
       </div>
 
       <form onSubmit={handleSaveExam} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col md:flex-row">
@@ -88,7 +112,7 @@ export default function TestBuilder() {
               className="w-full flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
             >
               <Save className="w-5 h-5" />
-              Save Exam
+              {examId ? 'Update Exam' : 'Save Exam'}
             </button>
           </div>
         </div>

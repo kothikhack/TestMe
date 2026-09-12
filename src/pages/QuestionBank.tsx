@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type Question } from '../db';
-import { Search, Plus, Trash2, Edit } from 'lucide-react';
+import { Search, Plus, Trash2, Edit, Image as ImageIcon } from 'lucide-react';
 import QuestionForm from '../components/QuestionForm.tsx';
 
 export default function QuestionBank() {
@@ -85,6 +85,11 @@ export default function QuestionBank() {
                           {cat}
                         </span>
                       ))}
+                      {q.figureBase64 && (
+                        <span className="flex items-center gap-1 text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full border border-indigo-100">
+                          <ImageIcon className="w-3 h-3" /> Figure
+                        </span>
+                      )}
                     </div>
                     <p className="font-medium text-slate-800 mt-2">{q.questionText}</p>
                     <p className="text-sm text-slate-500 mt-1">

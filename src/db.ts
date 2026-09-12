@@ -8,6 +8,7 @@ export interface Question {
   correctAnswer: string;
   categories: string[];
   explanation?: string;
+  figureBase64?: string;
   createdAt: Date;
 }
 
