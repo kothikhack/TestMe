@@ -130,7 +130,7 @@ export default function BackupRestore() {
           <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4">
             <Upload className="w-6 h-6" />
           </div>
-          <h2 className="text-xl font-bold mb-2">Restore Data</h2>
+          <h2 className="text-xl font-bold mb-2">Add Chunks</h2>
           <p className="text-slate-500 mb-6 text-sm">
             Upload a previously downloaded JSON backup file. <br />
             <strong className="text-emerald-600">Note: This will safely merge the uploaded data into your existing bank without overwriting anything.</strong>
@@ -147,7 +147,7 @@ export default function BackupRestore() {
             disabled={isImporting}
             className="w-full flex justify-center items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Upload className="w-5 h-5" /> {isImporting ? 'Restoring...' : 'Upload Backup File'}
+            <Upload className="w-5 h-5" /> {isImporting ? 'Adding...' : 'Upload Chunk File'}
           </button>
         </div>
       </div>
