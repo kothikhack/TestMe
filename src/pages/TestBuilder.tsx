@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../db';
+import { db } from '../lib/db';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Search, Save } from 'lucide-react';
 

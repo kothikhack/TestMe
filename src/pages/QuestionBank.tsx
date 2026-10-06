@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type Question } from '../db';
+import { db, type Question } from '../lib/db';
 import { Search, Plus, Trash2, Edit, Image as ImageIcon } from 'lucide-react';
 import QuestionForm from '../components/QuestionForm.tsx';
 

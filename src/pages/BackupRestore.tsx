@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { db } from '../db';
+import { db } from '../lib/db';
 import { Download, Upload, AlertTriangle, CheckCircle } from 'lucide-react';
 
 export default function BackupRestore() {

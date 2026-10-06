@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type Question, type Exam } from '../db';
+import { db, type Question, type Exam } from '../lib/db';
 import { PlaySquare, CheckCircle, XCircle, ArrowRight, ArrowLeft, Edit, Trash2 } from 'lucide-react';
 
 export default function ExamSimulator() {

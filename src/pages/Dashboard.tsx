@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../db';
+import { db } from '../lib/db';
 import { Link } from 'react-router-dom';
 import { Database, FilePlus } from 'lucide-react';
 

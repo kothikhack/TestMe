@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { db, type Question } from '../db';
+import { db, type Question } from '../lib/db';
 import { X, Plus, Trash2 } from 'lucide-react';
 
 interface Props {
