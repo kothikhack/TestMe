@@ -31,5 +31,4 @@ db.version(1).stores({
   exams: '++id, title, createdAt'
 });
 
-export type { EntityTable };
 export { db };
